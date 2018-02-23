@@ -1,0 +1,84 @@
+@media (min-width: 1281px) {}
+
+/* 
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {}
+
+/* 
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {}
+
+/* 
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {}
+
+/* 
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 481px) and (max-width: 767px) {}
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 480px) {}
+
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.trello-container {
+  width: 100%;
+}
+
+.trello-title {
+  background: blue;
+  font-size: 1.5em;
+  color: #fff;
+  text-align: center;
+  padding: 0.5em 1em;
+}
+
+.trello-components-container>div {
+  width: 30.3%;
+  display: inline-block;
+  text-align: center;
+  margin-top: 1em;
+  border: 1px solid #333;
+  height: 30%;
+  margin-left: 1em;
+}
+
+.done-container-title,
+.progress-container-title,
+.todo-container-title {
+  padding: 0.5em;
+}
+
+.progress-container-content,
+.done-container-content,
+.todo-container-content {
+  background: #eee;
+  margin: 0.5em 0.5em;
+  border-radius: 3px;
+}
+
+.trello-add-component-block>span {
+  background: #333;
+  color: #fff;
+  padding: 0.5em;
+}
