@@ -54,31 +54,75 @@ body {
 }
 
 .trello-components-container>div {
-  width: 30.3%;
+  width: 31.9%;
   display: inline-block;
-  text-align: center;
   margin-top: 1em;
-  border: 1px solid #333;
-  height: 30%;
-  margin-left: 1em;
+  margin-right: 1em;
+  background: #e2e4e6;
+  border-radius: 3px;
+  min-height: 34%;
+  max-height: 85%;
+  overflow: auto;
 }
 
 .done-container-title,
 .progress-container-title,
 .todo-container-title {
   padding: 0.5em;
+  font-weight: 600;
 }
 
 .progress-container-content,
 .done-container-content,
 .todo-container-content {
-  background: #eee;
+  background: #fff;
   margin: 0.5em 0.5em;
   border-radius: 3px;
+  padding: 1em;
 }
 
-.trello-add-component-block>span {
-  background: #333;
+.trello-add-component-block {
+  color: #838c91;
+  padding: 0.5em;
+  border-top: 1px #c4baba dashed;
+  font-size: 0.9em;
+}
+
+.trello-components-container {
+  display: flex;
+  padding: 1em;
+}
+
+div#done {
+  margin-right: 0 !important;
+}
+
+.addTask-block>button {
+  border: none;
+  border-radius: 3px;
+  background: #2a57fe;
+  margin: 0.5em 0;
   color: #fff;
   padding: 0.5em;
+  text-align: left !important;
+  display: block;
+  outline: none;
+}
+
+input.addTask-data {
+  width: 76%;
+  border: none;
+}
+
+.trello-add-component-block {
+  background: #e2e4e6;
+}
+
+textarea.addTask-data {
+  resize: none;
+  outline: none;
+}
+
+.addTask-block {
+  margin-top: 0.5em;
 }

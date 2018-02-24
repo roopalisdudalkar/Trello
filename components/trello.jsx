@@ -17,6 +17,11 @@ export default class Bar extends React.Component {
     this.toggleAddTask = this.toggleAddTask.bind(this);
     this.drop = this.drop.bind(this);
     this.dragStart = this.dragStart.bind(this);
+    this.stopredirection = this.stopredirection.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
   }
 
   toggleAddTask() {
@@ -26,39 +31,71 @@ export default class Bar extends React.Component {
   }
 
   addTask(data) {
-    this.setState({
-      todo: [...this.state.todo, data],
-      showAddTask: !this.state.showAddTask
-    })
+    if (data === '' || data === null) {
+      alert('Please enter a valid data for the card');
+    }
+    else {
+      this.setState({
+        todo: [...this.state.todo, data],
+        showAddTask: !this.state.showAddTask
+      })
+    }
   }
 
   drop(event) {
     event.preventDefault();
-    var data;
-    try {
-      data = JSON.parse(event.dataTransfer.getData('text'));
-    } catch (e) {
-      return;
+    let data = JSON.parse(event.dataTransfer.getData('text'));
+    let currentCard = data.id;
+    let currentList = data.column;
+    let currentcardValue = data.value;
+    let targetList = event.target.id;
+    if (event.target.dataset.column) {
+      targetList = event.target.dataset.column;
     }
-    console.log(data)
+
+    let updatedCurrentList = (this.state[currentList]).splice(currentCard, 1);
+    let updatedTargetList = (this.state[targetList]).push(currentcardValue);
+    event.dataTransfer.clearData()
     this.setState({
-      progress: [...this.state.progress, 'sdv']
+      [currentList]: this.state[currentList],
+      [targetList]: this.state[targetList]
+    }, () => {
+
+      console.log(this.state);
     })
+
+    // if (id[0] === 'todo') {
+    //   var aa = (this.state.todo).splice(id[1], 1);
+    //   this.setState({
+    //     todo: [...this.state.todo, aa]
+    //   })
+    // }
+    // event.target.appendChild(document.getElementById(data));
+    // this.setState({
+    //   progress: [...this.state.progress, 'roopa']
+    // }, event.dataTransfer.clearData())
   }
 
   dragStart(event) {
 
-    var data = {
-      name: 'foobar',
-      age: 15
-    };
+    var data = event.target.innerText;
+    event.currentTarget.style.border = "dashed";
 
-    event.dataTransfer.setData('text', JSON.stringify(data));
+    var currentData = {
+      id: event.target.id,
+      value: data,
+      column: event.target.dataset.column
+    }
 
+    event.dataTransfer.setData("text", JSON.stringify(currentData));
+  }
+
+  stopredirection(e) {
+    e.preventDefault();
   }
 
   render() {
-    var addTaskBtn = '', todoData = [], progressData = [];
+    var addTaskBtn = '', todoData = [], progressData = [], doneData = [];
     var _this = this;
     if (this.state.showAddTask) {
       addTaskBtn = <AddTask addTask={this.addTask}></AddTask>
@@ -66,11 +103,13 @@ export default class Bar extends React.Component {
 
     if (this.state.todo.length > 0) {
       this.state.todo.map(function (data, key) {
-        todoData[key] = <div onDragStart={_this.dragStart}
+        todoData[key] = <div
+          id={key}
+          data-column="todo"
+          data-currentVal={"todo" + key}
           draggable='true'
-          onDrop={_this.drop}
           className="todo-container-content"
-          onDragOver={event.preventDefault()}>
+          onDragStart={_this.dragStart}>
           {data}
         </div>
       })
@@ -78,11 +117,27 @@ export default class Bar extends React.Component {
 
     if (this.state.progress.length > 0) {
       this.state.progress.map(function (data, key) {
-        progressData[key] = <div onDragStart={_this.dragStart}
+        progressData[key] = <div
           draggable='true'
-          onDrop={_this.drop}
-          className="progress-container-content"
-          onDragOver={event.preventDefault()}>
+          data-currentVal={"progress" + key}
+          data-column="progress"
+          id={key}
+          onDragStart={_this.dragStart}
+          className="progress-container-content">
+          {data}
+        </div>
+      })
+    }
+
+    if (this.state.done.length > 0) {
+      this.state.done.map(function (data, key) {
+        doneData[key] = <div
+          draggable='true'
+          data-currentVal={"done" + key}
+          data-column="done"
+          id={key}
+          onDragStart={_this.dragStart}
+          className="done-container-content">
           {data}
         </div>
       })
@@ -91,22 +146,25 @@ export default class Bar extends React.Component {
     return (
       <div className="trello-container">
         <div className="trello-title">Trello</div>
-        <div className="trello-add-component-block">
-          <span onClick={this.toggleAddTask}>Add</span>
-          {addTaskBtn}
-        </div>
         <div className="trello-components-container">
-          <div className="todo-container">
+          <div className="todo-container" onDrop={_this.drop}
+            onDragOver={_this.stopredirection} id="todo">
             <div className="todo-container-title">Todo</div>
             {todoData}
+            <div className="trello-add-component-block">
+              <div onClick={this.toggleAddTask} className="add-card">Add a card</div>
+              {addTaskBtn}
+            </div>
           </div>
-          <div className="progress-container">
+          <div className="progress-container" onDrop={_this.drop}
+            onDragOver={_this.stopredirection} id="progress">
             <div className="progress-container-title">In Progress</div>
             {progressData}
           </div>
-          <div className="done-container">
+          <div className="done-container" onDrop={_this.drop}
+            onDragOver={_this.stopredirection} id="done">
             <div className="done-container-title">Done</div>
-            <div draggable='true' onDrop={this.drop} className="done-container-content">sdvsvd</div>
+            {doneData}
           </div>
         </div>
       </div>

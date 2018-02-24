@@ -20,11 +20,10 @@ export default class AddTask extends React.Component {
   render() {
     return (
       <div className="addTask-block">
-        <input type="text"
-          className="addTask-data"
-          value={this.state.task}
-          onChange={this.handleInputChange}>
-        </input>
+        <textarea rows="4" cols="22" className="addTask-data" onChange={this.handleInputChange}
+          defaultValue={this.state.task}>
+        </textarea>
+
         <button onClick={this.props.addTask.bind(this, this.state.task)}>Add</button>
       </div>
     )
