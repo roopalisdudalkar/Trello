@@ -101,6 +101,7 @@ textarea.addTask-data {
 
 .trello-cards {
   margin-bottom: 1em;
+  height: 4em;
 }
 
 .changable-block {
