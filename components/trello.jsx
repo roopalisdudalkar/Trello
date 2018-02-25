@@ -1,6 +1,8 @@
 import React from "react";
 import AddTask from './addTask.jsx';
 import EditTask from './editTask.jsx';
+import Card from './cards.jsx';
+
 require('../css/trello.css');
 require('../storage');
 
@@ -151,63 +153,52 @@ export default class Bar extends React.Component {
     }
 
     if (this.state.todo.length > 0) {
-      if (this.state.editToggle) {
-        todoData.push(<div><EditTask data={this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
-      }
-      else {
-        this.state.todo.map(function (data, key) {
-          todoData[key] = <input
-            id={key}
-            data-column="todo"
-            data-currentVal={"todo" + key}
-            draggable='true'
-            className="todo-container-content"
+
+      this.state.todo.map(function (data, key) {
+        if (_this.state.editToggle && "todo" === _this.state.info.column && _this.state.info.id === key) {
+          todoData.push(<div><EditTask data={_this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+        }
+        else {
+          todoData.push(<Card id={key}
+            column="todo"
             onDragStart={_this.dragStart}
-            onClick={_this.editTrelloCard.bind(_this, key, 'todo', data)}
-            value={data}>
-          </input>
-        })
-      }
+            editTrelloCard={_this.editTrelloCard}
+            currentvalue={data}>
+          </Card>);
+        }
+      });
     }
 
     if (this.state.progress.length > 0) {
-      if (this.state.editToggle) {
-        todoData.push(<div><EditTask data={this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
-      }
-      else {
-        this.state.progress.map(function (data, key) {
-          progressData[key] = <div
-            draggable='true'
-            data-currentVal={"progress" + key}
-            data-column="progress"
-            id={key}
+      this.state.progress.map(function (data, key) {
+        if (_this.state.editToggle && "progress" === _this.state.info.column && _this.state.info.id === key) {
+          progressData.push(<div><EditTask data={_this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+        }
+        else {
+          progressData.push(<Card id={key}
+            column="progress"
             onDragStart={_this.dragStart}
-            className="progress-container-content"
-            onClick={_this.editTrelloCard.bind(_this, key, 'todo', data)}>
-            {data}
-          </div>
-        })
-      }
+            editTrelloCard={_this.editTrelloCard}
+            currentvalue={data}>
+          </Card>);
+        }
+      })
     }
 
     if (this.state.done.length > 0) {
-      if (this.state.editToggle) {
-        todoData.push(<div><EditTask data={this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
-      }
-      else {
-        this.state.done.map(function (data, key) {
-          doneData[key] = <div
-            draggable='true'
-            data-currentVal={"done" + key}
-            data-column="done"
-            id={key}
+      this.state.done.map(function (data, key) {
+        if (_this.state.editToggle && "done" === _this.state.info.column && _this.state.info.id === key) {
+          doneData.push(<div><EditTask data={_this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+        }
+        else {
+          doneData.push(<Card id={key}
+            column="done"
             onDragStart={_this.dragStart}
-            className="done-container-content"
-            onClick={_this.editTrelloCard.bind(_this, key, 'todo', data)}>
-            {data}
-          </div>
-        })
-      }
+            editTrelloCard={_this.editTrelloCard}
+            currentvalue={data}>
+          </Card>)
+        }
+      })
     }
 
     return (
