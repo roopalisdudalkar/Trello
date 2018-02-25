@@ -1,5 +1,6 @@
 import React from "react";
 import AddTask from './addTask.jsx';
+import EditTask from './editTask.jsx';
 require('../css/trello.css');
 require('../storage');
 
@@ -10,7 +11,9 @@ export default class Bar extends React.Component {
       todo: [],
       progress: [],
       done: [],
-      showAddTask: false
+      showAddTask: false,
+      editToggle: false,
+      info: []
     }
 
     this.addTask = this.addTask.bind(this);
@@ -18,10 +21,20 @@ export default class Bar extends React.Component {
     this.drop = this.drop.bind(this);
     this.dragStart = this.dragStart.bind(this);
     this.stopredirection = this.stopredirection.bind(this);
+    this.editTrelloCard = this.editTrelloCard.bind(this);
+    this.editTask = this.editTask.bind(this);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
+  editTrelloCard(id, card, value) {
+    var info = {
+      id: id,
+      column: card,
+      value: value
+    }
+    this.setState({
+      info: info,
+      editToggle: true
+    })
   }
 
   toggleAddTask() {
@@ -42,6 +55,20 @@ export default class Bar extends React.Component {
     }
   }
 
+  editTask(data) {
+    if (data === '' || data === null) {
+      alert('Please enter a valid data for the card');
+    }
+    else {
+      let cardState = this.state[data.column];
+      cardState[data.id] = data.value;
+      this.setState({
+        [data.column]: cardState,
+        editToggle: false
+      })
+    }
+  }
+
   drop(event) {
     event.preventDefault();
     let data = JSON.parse(event.dataTransfer.getData('text'));
@@ -50,19 +77,41 @@ export default class Bar extends React.Component {
     let currentcardValue = data.value;
     let targetList = event.target.id;
     if (event.target.dataset.column) {
-      targetList = event.target.dataset.column;
+      let targetListClass = event.target.dataset.column;
+      let vvv = this.state[targetListClass];
+      if (targetListClass !== currentList) {
+        vvv.splice(targetList, 0, currentcardValue);
+        let updatedCurrentList = (this.state[currentList]).splice(currentCard, 1);
+        this.setState({
+          [currentList]: this.state[currentList],
+          [targetList]: vvv
+        })
+      }
+      else {
+        vvv[targetList] = currentcardValue;
+        vvv[currentCard] = event.target.innerHTML;
+        // let temp = aa;
+        // aa = bb;
+        // bb = temp;
+
+        this.setState({
+          [targetList]: vvv
+        })
+      }
+    }
+    else {
+      let updatedCurrentList = (this.state[currentList]).splice(currentCard, 1);
+      let updatedTargetList = (this.state[targetList]).push(currentcardValue);
+      event.dataTransfer.clearData()
+      this.setState({
+        [currentList]: this.state[currentList],
+        [targetList]: this.state[targetList]
+      }, () => {
+
+        console.log(this.state);
+      })
     }
 
-    let updatedCurrentList = (this.state[currentList]).splice(currentCard, 1);
-    let updatedTargetList = (this.state[targetList]).push(currentcardValue);
-    event.dataTransfer.clearData()
-    this.setState({
-      [currentList]: this.state[currentList],
-      [targetList]: this.state[targetList]
-    }, () => {
-
-      console.log(this.state);
-    })
 
     // if (id[0] === 'todo') {
     //   var aa = (this.state.todo).splice(id[1], 1);
@@ -102,45 +151,63 @@ export default class Bar extends React.Component {
     }
 
     if (this.state.todo.length > 0) {
-      this.state.todo.map(function (data, key) {
-        todoData[key] = <div
-          id={key}
-          data-column="todo"
-          data-currentVal={"todo" + key}
-          draggable='true'
-          className="todo-container-content"
-          onDragStart={_this.dragStart}>
-          {data}
-        </div>
-      })
+      if (this.state.editToggle) {
+        todoData.push(<div><EditTask data={this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+      }
+      else {
+        this.state.todo.map(function (data, key) {
+          todoData[key] = <input
+            id={key}
+            data-column="todo"
+            data-currentVal={"todo" + key}
+            draggable='true'
+            className="todo-container-content"
+            onDragStart={_this.dragStart}
+            onClick={_this.editTrelloCard.bind(_this, key, 'todo', data)}
+            value={data}>
+          </input>
+        })
+      }
     }
 
     if (this.state.progress.length > 0) {
-      this.state.progress.map(function (data, key) {
-        progressData[key] = <div
-          draggable='true'
-          data-currentVal={"progress" + key}
-          data-column="progress"
-          id={key}
-          onDragStart={_this.dragStart}
-          className="progress-container-content">
-          {data}
-        </div>
-      })
+      if (this.state.editToggle) {
+        todoData.push(<div><EditTask data={this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+      }
+      else {
+        this.state.progress.map(function (data, key) {
+          progressData[key] = <div
+            draggable='true'
+            data-currentVal={"progress" + key}
+            data-column="progress"
+            id={key}
+            onDragStart={_this.dragStart}
+            className="progress-container-content"
+            onClick={_this.editTrelloCard.bind(_this, key, 'todo', data)}>
+            {data}
+          </div>
+        })
+      }
     }
 
     if (this.state.done.length > 0) {
-      this.state.done.map(function (data, key) {
-        doneData[key] = <div
-          draggable='true'
-          data-currentVal={"done" + key}
-          data-column="done"
-          id={key}
-          onDragStart={_this.dragStart}
-          className="done-container-content">
-          {data}
-        </div>
-      })
+      if (this.state.editToggle) {
+        todoData.push(<div><EditTask data={this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+      }
+      else {
+        this.state.done.map(function (data, key) {
+          doneData[key] = <div
+            draggable='true'
+            data-currentVal={"done" + key}
+            data-column="done"
+            id={key}
+            onDragStart={_this.dragStart}
+            className="done-container-content"
+            onClick={_this.editTrelloCard.bind(_this, key, 'todo', data)}>
+            {data}
+          </div>
+        })
+      }
     }
 
     return (
