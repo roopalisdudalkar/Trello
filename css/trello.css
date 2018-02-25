@@ -93,21 +93,25 @@ textarea.addTask-data {
 
 .changable-block>span {
   text-align: right;
-  margin-left: 0.2em;
+  margin-left: 1em;
   color: blue;
   text-transform: uppercase;
   font-size: 0.7em;
 }
 
 .trello-cards {
-  background: #d3d3d3;
-  padding: 0.5em 0 0 0;
   margin-bottom: 1em;
 }
 
 .changable-block {
-  display: inline-block;
+  display: none;
   margin-bottom: 0.3em;
+  width: 100%;
+}
+
+.trello-cards:hover>.changable-block {
+  display: inline-block;
+  box-sizing: border-box;
 }
 
 .edit-Task {

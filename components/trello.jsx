@@ -4,7 +4,6 @@ import EditTask from './editTask.jsx';
 import Card from './cards.jsx';
 
 require('../css/trello.css');
-require('../storage');
 
 export default class Bar extends React.Component {
   constructor(props) {
@@ -29,6 +28,30 @@ export default class Bar extends React.Component {
     this.ondragLeave = this.ondragLeave.bind(this);
   }
 
+  //get data from localstorage
+  componentWillMount() {
+    if (localStorage) {
+      if (localStorage.todo) {
+        var data = JSON.parse(localStorage.getItem("todo"))
+        this.setState({
+          todo: data
+        })
+      }
+      if (localStorage.progress) {
+        var data1 = JSON.parse(localStorage.getItem("progress"))
+        this.setState({
+          progress: data1
+        })
+      }
+      if (localStorage.done) {
+        var data2 = JSON.parse(localStorage.getItem("done"))
+        this.setState({
+          done: data2
+        })
+      }
+    }
+  }
+
   ondragLeave(event) {
     var card = event.target.dataset.column;
     if (document.getElementById(card)) {
@@ -37,6 +60,7 @@ export default class Bar extends React.Component {
     }
   }
 
+  //edit data of the card
   editTrelloCard(id, card, value) {
     var info = {
       id: id,
@@ -63,6 +87,10 @@ export default class Bar extends React.Component {
       this.setState({
         todo: [...this.state.todo, data],
         showAddTask: !this.state.showAddTask
+      }, function () {
+        if (localStorage) {
+          localStorage.setItem("todo", JSON.stringify(this.state.todo));
+        }
       })
     }
   }
@@ -105,6 +133,11 @@ export default class Bar extends React.Component {
         this.setState({
           [currentList]: this.state[currentList],
           [targetList]: vvv
+        }, function () {
+          if (localStorage) {
+            localStorage.setItem(currentList, JSON.stringify(this.state[currentList]));
+            localStorage.setItem(targetList, JSON.stringify(this.state[targetList]));
+          }
         })
       }
       else {
@@ -116,6 +149,10 @@ export default class Bar extends React.Component {
 
         this.setState({
           [targetList]: vvv
+        }, function () {
+          if (localStorage) {
+            localStorage.setItem(targetListClass, JSON.stringify(this.state[targetList]));
+          }
         })
       }
     }
@@ -127,13 +164,17 @@ export default class Bar extends React.Component {
         this.setState({
           [currentList]: this.state[currentList],
           [targetList]: this.state[targetList]
+        }, function () {
+          if (localStorage) {
+            localStorage.setItem(targetList, JSON.stringify(this.state[targetList]));
+            localStorage.setItem(currentList, JSON.stringify(this.state[currentList]));
+          }
         })
       }
     }
   }
 
   dragStart(event) {
-
     var data = event.target.innerText;
     var card = event.target.dataset.column;
 
@@ -142,7 +183,6 @@ export default class Bar extends React.Component {
       value: data,
       column: card
     }
-
     event.dataTransfer.setData("text", JSON.stringify(currentData));
   }
 
@@ -161,9 +201,8 @@ export default class Bar extends React.Component {
     if (this.state.showAddTask) {
       addTaskBtn = <AddTask addTask={this.addTask}></AddTask>
     }
-
+    //display all todo list
     if (this.state.todo.length > 0) {
-
       this.state.todo.map(function (data, key) {
         if (_this.state.editToggle && "todo" === _this.state.info.column && _this.state.info.id === key) {
           todoData.push(<div><EditTask data={_this.state.info} editTask={_this.editTask}></EditTask></div>);
@@ -180,6 +219,7 @@ export default class Bar extends React.Component {
       });
     }
 
+    //display all progress list
     if (this.state.progress.length > 0) {
       this.state.progress.map(function (data, key) {
         if (_this.state.editToggle && "progress" === _this.state.info.column && _this.state.info.id === key) {
@@ -197,6 +237,7 @@ export default class Bar extends React.Component {
       })
     }
 
+    //display all done list
     if (this.state.done.length > 0) {
       this.state.done.map(function (data, key) {
         if (_this.state.editToggle && "done" === _this.state.info.column && _this.state.info.id === key) {
@@ -218,6 +259,7 @@ export default class Bar extends React.Component {
       <div className="trello-container">
         <div className="trello-title">Trello</div>
         <div className="trello-components-container">
+
           <div className="todo-container" onDrop={_this.drop}
             onDragOver={_this.stopredirection} id="todo" onDragLeave={_this.ondragLeave}>
             <div className="todo-container-title">Todo</div>
@@ -227,11 +269,13 @@ export default class Bar extends React.Component {
               {addTaskBtn}
             </div>
           </div>
+
           <div className="progress-container" onDrop={_this.drop}
             onDragOver={_this.stopredirection} id="progress" onDragLeave={_this.ondragLeave}>
             <div className="progress-container-title">In Progress</div>
             {progressData}
           </div>
+
           <div className="done-container" onDrop={_this.drop}
             onDragOver={_this.stopredirection} id="done" onDragLeave={_this.ondragLeave}>
             <div className="done-container-title">Done</div>

@@ -18,8 +18,12 @@ export default class Cards extends React.Component {
                 {this.props.currentValue}
             </div>
             <div className="changable-block">
-                <span onClick={this.props.editTrelloCard.bind(this, this.props.id, this.props.column, this.props.currentValue)}>edit</span>
-                <span onClick={this.props.deleteTrelloCard.bind(this, this.props.id, this.props.column, this.props.currentValue)}>delete</span>
+                <span onClick={this.props.editTrelloCard.bind(this, this.props.id, this.props.column, this.props.currentValue)}>
+                    <img src="../images/edit.png" width="15px" height="15px" />
+                </span>
+                <span onClick={this.props.deleteTrelloCard.bind(this, this.props.id, this.props.column, this.props.currentValue)}>
+                    <img src="../images/delete.png" width="15px" height="15px" />
+                </span>
             </div>
         </div>
         )
