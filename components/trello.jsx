@@ -26,8 +26,16 @@ export default class Bar extends React.Component {
     this.editTrelloCard = this.editTrelloCard.bind(this);
     this.editTask = this.editTask.bind(this);
     this.deleteTrelloCard = this.deleteTrelloCard.bind(this);
+    this.ondragLeave = this.ondragLeave.bind(this);
   }
 
+  ondragLeave(event) {
+    var card = event.target.dataset.column;
+    if (document.getElementById(card)) {
+      var mainCrad = document.getElementById(card)
+      mainCrad.classList.remove('addBorder')
+    }
+  }
 
   editTrelloCard(id, card, value) {
     var info = {
@@ -112,40 +120,27 @@ export default class Bar extends React.Component {
       }
     }
     else {
-      let updatedCurrentList = (this.state[currentList]).splice(currentCard, 1);
-      let updatedTargetList = (this.state[targetList]).push(currentcardValue);
-      event.dataTransfer.clearData()
-      this.setState({
-        [currentList]: this.state[currentList],
-        [targetList]: this.state[targetList]
-      }, () => {
-
-        console.log(this.state);
-      })
+      if (this.state[targetList] && this.state[currentList]) {
+        let updatedCurrentList = (this.state[currentList]).splice(currentCard, 1);
+        let updatedTargetList = (this.state[targetList]).push(currentcardValue);
+        event.dataTransfer.clearData()
+        this.setState({
+          [currentList]: this.state[currentList],
+          [targetList]: this.state[targetList]
+        })
+      }
     }
-
-
-    // if (id[0] === 'todo') {
-    //   var aa = (this.state.todo).splice(id[1], 1);
-    //   this.setState({
-    //     todo: [...this.state.todo, aa]
-    //   })
-    // }
-    // event.target.appendChild(document.getElementById(data));
-    // this.setState({
-    //   progress: [...this.state.progress, 'roopa']
-    // }, event.dataTransfer.clearData())
   }
 
   dragStart(event) {
 
     var data = event.target.innerText;
-    event.currentTarget.style.border = "dashed";
+    var card = event.target.dataset.column;
 
     var currentData = {
       id: event.target.id,
       value: data,
-      column: event.target.dataset.column
+      column: card
     }
 
     event.dataTransfer.setData("text", JSON.stringify(currentData));
@@ -153,6 +148,11 @@ export default class Bar extends React.Component {
 
   stopredirection(e) {
     e.preventDefault();
+    var card = e.target.dataset.column;
+    if (document.getElementById(card)) {
+      var mainCrad = document.getElementById(card)
+      mainCrad.classList.add('addBorder')
+    }
   }
 
   render() {
@@ -166,14 +166,14 @@ export default class Bar extends React.Component {
 
       this.state.todo.map(function (data, key) {
         if (_this.state.editToggle && "todo" === _this.state.info.column && _this.state.info.id === key) {
-          todoData.push(<div><EditTask data={_this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+          todoData.push(<div><EditTask data={_this.state.info} editTask={_this.editTask}></EditTask></div>);
         }
         else {
           todoData.push(<Card id={key}
             column="todo"
             onDragStart={_this.dragStart}
             editTrelloCard={_this.editTrelloCard}
-            currentvalue={data}
+            currentValue={data}
             deleteTrelloCard={_this.deleteTrelloCard}>
           </Card>);
         }
@@ -183,14 +183,14 @@ export default class Bar extends React.Component {
     if (this.state.progress.length > 0) {
       this.state.progress.map(function (data, key) {
         if (_this.state.editToggle && "progress" === _this.state.info.column && _this.state.info.id === key) {
-          progressData.push(<div><EditTask data={_this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+          progressData.push(<div><EditTask data={_this.state.info} editTask={_this.editTask}></EditTask></div>);
         }
         else {
           progressData.push(<Card id={key}
             column="progress"
             onDragStart={_this.dragStart}
             editTrelloCard={_this.editTrelloCard}
-            currentvalue={data}
+            currentValue={data}
             deleteTrelloCard={_this.deleteTrelloCard}>
           </Card>);
         }
@@ -200,14 +200,14 @@ export default class Bar extends React.Component {
     if (this.state.done.length > 0) {
       this.state.done.map(function (data, key) {
         if (_this.state.editToggle && "done" === _this.state.info.column && _this.state.info.id === key) {
-          doneData.push(<div><EditTask data={_this.state.info} task="hsdv" editTask={_this.editTask}></EditTask></div>);
+          doneData.push(<div><EditTask data={_this.state.info} editTask={_this.editTask}></EditTask></div>);
         }
         else {
           doneData.push(<Card id={key}
             column="done"
             onDragStart={_this.dragStart}
             editTrelloCard={_this.editTrelloCard}
-            currentvalue={data}
+            currentValue={data}
             deleteTrelloCard={_this.deleteTrelloCard}>
           </Card>)
         }
@@ -219,7 +219,7 @@ export default class Bar extends React.Component {
         <div className="trello-title">Trello</div>
         <div className="trello-components-container">
           <div className="todo-container" onDrop={_this.drop}
-            onDragOver={_this.stopredirection} id="todo">
+            onDragOver={_this.stopredirection} id="todo" onDragLeave={_this.ondragLeave}>
             <div className="todo-container-title">Todo</div>
             {todoData}
             <div className="trello-add-component-block">
@@ -228,12 +228,12 @@ export default class Bar extends React.Component {
             </div>
           </div>
           <div className="progress-container" onDrop={_this.drop}
-            onDragOver={_this.stopredirection} id="progress">
+            onDragOver={_this.stopredirection} id="progress" onDragLeave={_this.ondragLeave}>
             <div className="progress-container-title">In Progress</div>
             {progressData}
           </div>
           <div className="done-container" onDrop={_this.drop}
-            onDragOver={_this.stopredirection} id="done">
+            onDragOver={_this.stopredirection} id="done" onDragLeave={_this.ondragLeave}>
             <div className="done-container-title">Done</div>
             {doneData}
           </div>

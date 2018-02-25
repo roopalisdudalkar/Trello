@@ -22,12 +22,14 @@ export default class EditTask extends React.Component {
         data.value = this.state.value;
 
         return (
-            <div className="addTask-block">
-                <textarea rows="4" cols="22" className="addTask-data" onChange={this.handleInputChange}
-                    defaultValue={this.state.value}>
-                </textarea>
+            <div className="edit-Task">
+                <div className="addTask-block">
+                    <textarea rows="4" cols="22" className="addTask-data" onChange={this.handleInputChange}
+                        defaultValue={this.state.value}>
+                    </textarea>
 
-                <button onClick={this.props.editTask.bind(this, data)}>Done</button>
+                    <button onClick={this.props.editTask.bind(this, data)}>Done</button>
+                </div>
             </div>
         )
     }
