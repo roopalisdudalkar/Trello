@@ -32,21 +32,21 @@ export default class Bar extends React.Component {
   componentWillMount() {
     if (localStorage) {
       if (localStorage.todo) {
-        var data = JSON.parse(localStorage.getItem("todo"))
+        var todoData = JSON.parse(localStorage.getItem("todo"))
         this.setState({
-          todo: data
+          todo: todoData
         })
       }
       if (localStorage.progress) {
-        var data1 = JSON.parse(localStorage.getItem("progress"))
+        var progressData = JSON.parse(localStorage.getItem("progress"))
         this.setState({
-          progress: data1
+          progress: progressData
         })
       }
       if (localStorage.done) {
-        var data2 = JSON.parse(localStorage.getItem("done"))
+        var doneData = JSON.parse(localStorage.getItem("done"))
         this.setState({
-          done: data2
+          done: doneData
         })
       }
     }
@@ -105,6 +105,10 @@ export default class Bar extends React.Component {
       this.setState({
         [data.column]: cardState,
         editToggle: false
+      }, function () {
+        if (localStorage) {
+          localStorage.setItem([data.column], JSON.stringify(this.state[data.column]));
+        }
       })
     }
   }
@@ -114,6 +118,10 @@ export default class Bar extends React.Component {
     cardState.splice(id, 1);
     this.setState({
       [card]: cardState,
+    }, function () {
+      if (localStorage) {
+        localStorage.setItem([card], JSON.stringify(this.state[card]));
+      }
     })
   }
 
@@ -126,13 +134,13 @@ export default class Bar extends React.Component {
     let targetList = event.target.id;
     if (event.target.dataset.column) {
       let targetListClass = event.target.dataset.column;
-      let vvv = this.state[targetListClass];
+      let targetState = this.state[targetListClass];
       if (targetListClass !== currentList) {
-        vvv.splice(targetList, 0, currentcardValue);
+        targetState.splice(targetList, 0, currentcardValue);
         let updatedCurrentList = (this.state[currentList]).splice(currentCard, 1);
         this.setState({
           [currentList]: this.state[currentList],
-          [targetList]: vvv
+          [targetList]: targetState
         }, function () {
           if (localStorage) {
             localStorage.setItem(currentList, JSON.stringify(this.state[currentList]));
@@ -141,14 +149,14 @@ export default class Bar extends React.Component {
         })
       }
       else {
-        vvv[targetList] = currentcardValue;
-        vvv[currentCard] = event.target.innerHTML;
+        targetState[targetList] = currentcardValue;
+        targetState[currentCard] = event.target.innerHTML;
         // let temp = aa;
         // aa = bb;
         // bb = temp;
 
         this.setState({
-          [targetList]: vvv
+          [targetList]: targetState
         }, function () {
           if (localStorage) {
             localStorage.setItem(targetListClass, JSON.stringify(this.state[targetList]));
