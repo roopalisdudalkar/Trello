@@ -25,7 +25,9 @@ export default class Bar extends React.Component {
     this.stopredirection = this.stopredirection.bind(this);
     this.editTrelloCard = this.editTrelloCard.bind(this);
     this.editTask = this.editTask.bind(this);
+    this.deleteTrelloCard = this.deleteTrelloCard.bind(this);
   }
+
 
   editTrelloCard(id, card, value) {
     var info = {
@@ -69,6 +71,14 @@ export default class Bar extends React.Component {
         editToggle: false
       })
     }
+  }
+
+  deleteTrelloCard(id, card, value) {
+    let cardState = this.state[card];
+    cardState.splice(id, 1);
+    this.setState({
+      [card]: cardState,
+    })
   }
 
   drop(event) {
@@ -163,7 +173,8 @@ export default class Bar extends React.Component {
             column="todo"
             onDragStart={_this.dragStart}
             editTrelloCard={_this.editTrelloCard}
-            currentvalue={data}>
+            currentvalue={data}
+            deleteTrelloCard={_this.deleteTrelloCard}>
           </Card>);
         }
       });
@@ -179,7 +190,8 @@ export default class Bar extends React.Component {
             column="progress"
             onDragStart={_this.dragStart}
             editTrelloCard={_this.editTrelloCard}
-            currentvalue={data}>
+            currentvalue={data}
+            deleteTrelloCard={_this.deleteTrelloCard}>
           </Card>);
         }
       })
@@ -195,7 +207,8 @@ export default class Bar extends React.Component {
             column="done"
             onDragStart={_this.dragStart}
             editTrelloCard={_this.editTrelloCard}
-            currentvalue={data}>
+            currentvalue={data}
+            deleteTrelloCard={_this.deleteTrelloCard}>
           </Card>)
         }
       })
