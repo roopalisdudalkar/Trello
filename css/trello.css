@@ -33,6 +33,8 @@ body {
 .todo-container-title {
   padding: 0.5em;
   font-weight: 600;
+  text-align: center;
+  border-bottom: 1px dashed #333;
 }
 
 .progress-container-content,

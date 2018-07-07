@@ -17,7 +17,7 @@ export default class AddTask extends React.Component {
     })
   }
 
-  render() {
+  render() { 
     return (
       <div className="addTask-block">
         <textarea rows="4" cols="22" className="addTask-data" onChange={this.handleInputChange}

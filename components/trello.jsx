@@ -25,7 +25,7 @@ export default class Bar extends React.Component {
     this.editTrelloCard = this.editTrelloCard.bind(this);
     this.editTask = this.editTask.bind(this);
     this.deleteTrelloCard = this.deleteTrelloCard.bind(this);
-    this.ondragLeave = this.ondragLeave.bind(this);
+    this.ondragLeave = this.ondragLeave.bind(this); 
   }
 
   //get data from localstorage

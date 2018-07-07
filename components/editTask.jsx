@@ -22,7 +22,7 @@ export default class EditTask extends React.Component {
         data.value = this.state.value;
 
         return (
-            <div className="edit-Task">
+            <div className="edit-Task"> 
                 <div className="addTask-block">
                     <textarea rows="4" cols="22" className="addTask-data" onChange={this.handleInputChange}
                         defaultValue={this.state.value} autoFocus>
